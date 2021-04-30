@@ -6,7 +6,7 @@ RUN apk update && apk add ca-certificates
 RUN apk add bash make gnupg
 
 # Download the hashicorp PGP key
-RUN gpg --keyserver hkp://pool.sks-keyservers.net --recv-key 51852D87348FFC4C
+RUN bash -c 'set -e; for k in 34365D9472D7468F 51852D87348FFC4C; do gpg --keyserver "hkp://pool.sks-keyservers.net" --recv-key "$k"; done;'
 
 WORKDIR /
 ADD https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip /terraform_${TF_VERSION}_linux_amd64.zip
