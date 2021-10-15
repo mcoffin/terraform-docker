@@ -15,9 +15,12 @@ build:
 build-source:
 	docker build $(DOCKERFLAGS) -t mcoffin/terraform:$(TF_VERSION)-source --build-arg TF_VERSION=$(TF_VERSION) -f Dockerfile-source .
 
+build-alpine:
+	docker build $(DOCKERFLAGS) -t mcoffin/terraform:alpine-$(shell date -u +'%Y%m%d' | tr -d '\n') .
+
 all: build build-source
 
 push: build
 	for img in {mcoffin,seventy3dataco}/terraform:$(TF_VERSION); do docker push "$$img"; done
 
-.PHONY: build build-source all push
+.PHONY: build build-source build-alpine all push
