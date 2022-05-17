@@ -1,13 +1,13 @@
 FROM alpine:latest
 
-ARG TF_VERSION
-
 RUN apk update && apk add ca-certificates
 RUN apk add bash make gnupg
 
 # Download the hashicorp PGP key
 COPY hashicorp-*.asc ./
 RUN bash -c 'find . -mindepth 1 -maxdepth 1 -type f -name "hashicorp-*.asc" | xargs -n 1 gpg2 --import'
+
+ARG TF_VERSION
 
 WORKDIR /
 ADD https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip /terraform_${TF_VERSION}_linux_amd64.zip
