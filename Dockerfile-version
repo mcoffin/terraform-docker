@@ -14,7 +14,7 @@ ADD https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSIO
 ADD https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_SHA256SUMS /terraform_${TF_VERSION}_SHA256SUMS
 ADD https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_SHA256SUMS.sig /terraform_${TF_VERSION}_SHA256SUMS.sig
 RUN gpg2 --verify-files terraform_${TF_VERSION}_SHA256SUMS.sig \
-	&& bash -c 'sha256sum -c <(find . -mindepth 1 -maxdepth 1 -type f -name "terraform_*_SHA256SUMS" | xargs cat | grep -F linux_amd64)' \
+	&& bash -c 'sha256sum -c <(grep -F linux_amd64 < terraform_"${TF_VERSION}"_SHA256SUMS)' \
 	&& TF_VERSION=${TF_VERSION} bash -c 'rm terraform_${TF_VERSION}_SHA256SUMS{,.sig}' \
 	&& mv terraform_${TF_VERSION}_linux_amd64.zip terraform.zip
 RUN unzip terraform.zip \
