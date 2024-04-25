@@ -1,11 +1,13 @@
 FROM alpine:latest
 
 RUN apk update && apk add ca-certificates
-RUN apk add bash make gnupg
+RUN apk add bash make gnupg zsh
 
 # Download the hashicorp PGP key
 COPY hashicorp-*.asc ./
-RUN bash -c 'find . -mindepth 1 -maxdepth 1 -type f -name "hashicorp-*.asc" | xargs -n 1 gpg2 --import'
+RUN \
+	bash -c '[ -e ~/.gnupg/public-keys.d ] || mkdir -p ~/.gnupg/public-keys.d' \
+	&& zsh -c 'set -e; set -x; mkdir -p ~/.gnupg/public-keys.d; for f in hashicorp-*.asc(.); do gpg2 --import < "$f" || exit $?; done; rm hashicorp-*.asc(.)'
 
 ARG TF_VERSION
 
@@ -15,7 +17,7 @@ ADD https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSIO
 ADD https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_SHA256SUMS.sig /terraform_${TF_VERSION}_SHA256SUMS.sig
 RUN gpg2 --verify-files terraform_${TF_VERSION}_SHA256SUMS.sig \
 	&& bash -c 'sha256sum -c <(grep -F linux_amd64 < terraform_"${TF_VERSION}"_SHA256SUMS)' \
-	&& TF_VERSION=${TF_VERSION} bash -c 'rm terraform_${TF_VERSION}_SHA256SUMS{,.sig}' \
+	&& zsh -c 'rm terraform_*SHA256SUMS{,.sig}(.N)' \
 	&& mv terraform_${TF_VERSION}_linux_amd64.zip terraform.zip
 RUN unzip terraform.zip \
 	&& rm terraform.zip \

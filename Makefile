@@ -2,6 +2,7 @@
 
 DOCKER_PULL ?= false
 
+DOCKER_EXE ?= docker
 DOCKERFLAGS ?=
 
 ifneq ($(DOCKER_PULL),false)
@@ -9,18 +10,18 @@ ifneq ($(DOCKER_PULL),false)
 endif
 
 build:
-	docker build $(DOCKERFLAGS) -t mcoffin/terraform:$(TF_VERSION) --build-arg TF_VERSION=$(TF_VERSION) -f Dockerfile-version .
-	docker tag {mcoffin,seventy3dataco}/terraform:$(TF_VERSION)
+	$(DOCKER_EXE) build $(DOCKERFLAGS) -t mcoffin/terraform:$(TF_VERSION) --build-arg TF_VERSION=$(TF_VERSION) -f Dockerfile-version .
+	$(DOCKER_EXE) tag {mcoffin,seventy3dataco}/terraform:$(TF_VERSION)
 
 build-source:
-	docker build $(DOCKERFLAGS) -t mcoffin/terraform:$(TF_VERSION)-source --build-arg TF_VERSION=$(TF_VERSION) -f Dockerfile-source .
+	$(DOCKER_EXE) build $(DOCKERFLAGS) -t mcoffin/terraform:$(TF_VERSION)-source --build-arg TF_VERSION=$(TF_VERSION) -f Dockerfile-source .
 
 build-alpine:
-	docker build $(DOCKERFLAGS) -t mcoffin/terraform:alpine-$(shell date -u +'%Y%m%d' | tr -d '\n') .
+	$(DOCKER_EXE) build $(DOCKERFLAGS) -t mcoffin/terraform:alpine-$(shell date -u +'%Y%m%d' | tr -d '\n') .
 
 all: build build-source
 
 push: build
-	for img in {mcoffin,seventy3dataco}/terraform:$(TF_VERSION); do docker push "$$img"; done
+	for img in {mcoffin,seventy3dataco}/terraform:$(TF_VERSION); do $(DOCKER_EXE) push "$$img"; done
 
 .PHONY: build build-source build-alpine all push
