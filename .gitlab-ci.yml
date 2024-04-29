@@ -1,0 +1,14 @@
+include:
+  - project: remax-dataco/gitlab-infrastructure
+    ref: master
+    file: 'gitlab-ci/docker.yml'
+
+stages:
+  - build
+
+vars:
+  TF_VERSION: 1.8.1
+
+build:
+  extends: .docker-build
+  when: manual
