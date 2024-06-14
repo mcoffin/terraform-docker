@@ -1,3 +1,7 @@
+# LOCATION CHANGE
+
+This project has moved to [GitLab](https://gitlab.com) at [`mcoffin/terraform-docker`](https://gitlab.com/mcoffin/terraform-docker)
+
 # terraform-docker
 
 Bulids [Alpine Linux](https://alpinelinux.org/)-based [Terraform](https://terraform.io) images for Docker. While all dependencies are installed via `apk`, `terraform` itself is installed from signed tarballs shipped by hashicorp so that we can stay more up-to-date.
